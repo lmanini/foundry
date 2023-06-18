@@ -37,7 +37,30 @@ pub enum SelectorsSubcommands {
         #[clap(flatten)]
         build: Box<CoreBuildArgs>,
     },
+    
+    /// List a choice of selectors
+    #[clap(visible_alias = "li")]
+    List {
+        /// The contract whose selectors to list
+        #[clap(
+            help = "The contract whose selectors are to be printed, in the form `(<path>:)?<contractname>`",
+            value_name = "CONTRACT"
+        )]
+        contract: ContractInfo,
 
+        #[clap(long, required_unless_present_any(["functions", "events", "errors"]))]
+        all: bool,
+
+        #[clap(long, conflicts_with("all"))]
+        functions: bool,
+
+        #[clap(long, conflicts_with("all"))]
+        events: bool,
+
+        #[clap(long, conflicts_with("all"))]
+        errors: bool,
+    },
+    
     /// Upload selectors to registry
     #[clap(visible_alias = "up")]
     Upload {
@@ -52,6 +75,7 @@ pub enum SelectorsSubcommands {
         #[clap(flatten)]
         project_paths: ProjectPathsArgs,
     },
+
 }
 
 impl SelectorsSubcommands {
@@ -176,6 +200,9 @@ impl SelectorsSubcommands {
                     println!("{} collisions found:", colliding_methods.len());
                     println!("{table}");
                 }
+            }
+            SelectorsSubcommands::List { contract, all, functions, events, errors } => {
+                todo!()
             }
         }
         Ok(())
